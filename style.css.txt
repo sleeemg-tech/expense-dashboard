@@ -1,0 +1,60 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+  padding: 20px;
+  background: #f9f9f9;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h1, h2, h3 {
+  color: #333;
+}
+
+form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+input, select {
+  padding: 5px;
+  margin-left: 10px;
+}
+
+button {
+  padding: 8px 16px;
+  background: #007acc;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #005fa3;
+}
+
+#expenses-table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+}
+
+#expenses-table th {
+  background-color: #007acc;
+  color: white;
+}
+
+#expenses-table td, #expenses-table th {
+  padding: 8px;
+  text-align: center;
+}
+
+#search-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}

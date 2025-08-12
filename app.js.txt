@@ -1,0 +1,94 @@
+// مصفوفة لحفظ المصروفات
+let expenses = [];
+
+// عناصر الصفحة
+const form = document.getElementById("expense-form");
+const tableBody = document.querySelector("#expenses-table tbody");
+const searchInput = document.getElementById("search-input");
+const totalExpensesElem = document.getElementById("total-expenses");
+const totalByCompanyElem = document.getElementById("total-by-company");
+const totalByMonthElem = document.getElementById("total-by-month");
+
+// إضافة مصروف جديد
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const expense = {
+    id: form["expense-id"].value,
+    amount: Number(form["amount"].value),
+    company: form["company"].value.trim(),
+    paid: form["paid"].value,
+    date: form["date"].value,
+  };
+
+  expenses.push(expense);
+  form.reset();
+  renderTable();
+  updateSummary();
+});
+
+// عرض البيانات في الجدول
+function renderTable(filter = "") {
+  tableBody.innerHTML = "";
+
+  let filtered = expenses.filter((exp) => {
+    if (!filter) return true;
+    const lowerFilter = filter.toLowerCase();
+    return (
+      exp.id.toString().includes(lowerFilter) ||
+      exp.company.toLowerCase().includes(lowerFilter)
+    );
+  });
+
+  filtered.forEach((exp) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${exp.id}</td>
+      <td>${exp.amount.toFixed(2)}</td>
+      <td>${exp.company}</td>
+      <td>${exp.paid}</td>
+      <td>${exp.date}</td>
+    `;
+    tableBody.appendChild(tr);
+  });
+}
+
+// تحديث الملخصات (الإجماليات)
+function updateSummary() {
+  let total = expenses.reduce((acc, exp) => acc + exp.amount, 0);
+  totalExpensesElem.textContent = `إجمالي المصروفات: ${total.toFixed(2)}`;
+
+  // إجمالي حسب الشركة
+  const byCompany = {};
+  expenses.forEach((exp) => {
+    if (!byCompany[exp.company]) byCompany[exp.company] = 0;
+    byCompany[exp.company] += exp.amount;
+  });
+  let companyText = "الإجمالي حسب الشركة: ";
+  companyText += Object.entries(byCompany)
+    .map(([comp, val]) => `${comp}: ${val.toFixed(2)}`)
+    .join(" | ");
+  totalByCompanyElem.textContent = companyText;
+
+  // إجمالي حسب الشهر
+  const byMonth = {};
+  expenses.forEach((exp) => {
+    const month = new Date(exp.date).toLocaleString("ar-EG", { month: "long", year: "numeric" });
+    if (!byMonth[month]) byMonth[month] = 0;
+    byMonth[month] += exp.amount;
+  });
+  let monthText = "الإجمالي حسب الشهر: ";
+  monthText += Object.entries(byMonth)
+    .map(([m, val]) => `${m}: ${val.toFixed(2)}`)
+    .join(" | ");
+  totalByMonthElem.textContent = monthText;
+}
+
+// البحث أثناء الكتابة
+searchInput.addEventListener("input", () => {
+  renderTable(searchInput.value);
+});
+
+// عرض الجدول في البداية
+renderTable();
+updateSummary();
